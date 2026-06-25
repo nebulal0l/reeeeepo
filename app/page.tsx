@@ -87,7 +87,7 @@ export default function Home() {
           {/* Bio */}
           <div className="max-w-xl">
             <p className="text-white/50 text-base leading-relaxed">
-              do i consider drpepper my girlfriend now?
+              thanks to everyone whos been supportive 💖
             </p>
           </div>
 
@@ -96,7 +96,7 @@ export default function Home() {
             {[
               { icon: Github, label: 'GitHub', href: 'https://github.com/hdhw' },
               { icon: Globe, label: 'Paragon <3', href: 'https://paragn.lol/u/1' },
-              { icon: MessageCircle, label: 'Discord', href: '#' },
+              { icon: MessageCircle, label: 'Discord', href: 'https://discord.com/users/530244467039535104' },
             ].map(({ icon: Icon, label, href }) => (
               <a
                 key={label}
