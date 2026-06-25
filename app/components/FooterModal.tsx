@@ -44,7 +44,7 @@ export function FooterModal() {
             </div>
 
             <p className="text-sm text-white/50 leading-relaxed">
-              I dont know
+              Manga is my passion! Dont you dare bashin' The writing's got finesse! Maybe you should borrow, These until tomorrow. Were you looking up my dress?!
             </p>
           </div>
         </div>
