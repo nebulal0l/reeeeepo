@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'star — developer & builder',
-  description: 'portfolio of star / panquake',
+  title: 'cat :D',
+  description: 'Just Monika.',
   openGraph: {
-    title: 'star',
-    description: 'developer & builder',
+    title: 'cat',
+    description: 'yuri from ddlc so peak',
   },
 };
 
