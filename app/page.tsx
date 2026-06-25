@@ -11,6 +11,7 @@ import { StatusDot } from './components/StatusDot';
 import { FooterModal } from './components/FooterModal';
 import { projects } from './data/projects';
 
+// "Just Monika" — each character code
 const SECRET = 'just monika';
 
 export default function Home() {
@@ -22,10 +23,14 @@ export default function Home() {
   const [monika, setMonika] = useState(false);
   const bufferRef = useRef('');
 
-  // Keypress listener — accumulates typed chars, checks against secret
+  // Keydown listener — accumulates typed chars, checks against secret
   const handleKey = useCallback((e: KeyboardEvent) => {
-    const ch = e.key.toLowerCase();
-    if (ch.length !== 1 && ch !== ' ') return; // ignore shift, ctrl etc
+    // ignore modifier combos
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    let ch = '';
+    if (e.key === ' ') ch = ' ';
+    else if (e.key.length === 1) ch = e.key.toLowerCase();
+    else return;
     bufferRef.current = (bufferRef.current + ch).slice(-SECRET.length);
     if (bufferRef.current === SECRET) {
       setMonika(true);
@@ -34,8 +39,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener('keypress', handleKey);
-    return () => window.removeEventListener('keypress', handleKey);
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
   }, [handleKey]);
 
   useEffect(() => {
@@ -61,7 +66,7 @@ export default function Home() {
   // Bio switches when monika mode is active
   const bio = monika
     ? 'Domn Gihceu'
-    : 'do i consider drpepper my girlfriend now?';
+    : 'Lets go read a story! What about S̶̻͆a̷̮̕y̵̩͆ö̶͎r̶̢͊ì̸͈  lets talk about me instead!';
 
   return (
     <main className="relative min-h-screen">
