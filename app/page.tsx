@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
 import { Github, Globe, ArrowDown, MessageCircle } from 'lucide-react';
 import { useLanyard } from './hooks/useLanyard';
@@ -11,10 +11,32 @@ import { StatusDot } from './components/StatusDot';
 import { FooterModal } from './components/FooterModal';
 import { projects } from './data/projects';
 
+const SECRET = 'just monika';
+
 export default function Home() {
   const { data } = useLanyard(10000);
   const [progressMs, setProgressMs] = useState(0);
   const frameRef = useRef<number>(0);
+
+  // Easter egg state
+  const [monika, setMonika] = useState(false);
+  const bufferRef = useRef('');
+
+  // Keypress listener — accumulates typed chars, checks against secret
+  const handleKey = useCallback((e: KeyboardEvent) => {
+    const ch = e.key.toLowerCase();
+    if (ch.length !== 1 && ch !== ' ') return; // ignore shift, ctrl etc
+    bufferRef.current = (bufferRef.current + ch).slice(-SECRET.length);
+    if (bufferRef.current === SECRET) {
+      setMonika(true);
+      bufferRef.current = '';
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('keypress', handleKey);
+    return () => window.removeEventListener('keypress', handleKey);
+  }, [handleKey]);
 
   useEffect(() => {
     if (!data?.spotify) return;
@@ -36,8 +58,61 @@ export default function Home() {
   const avatarUrl = 'https://cdn.pfps.gg/pfps/2024-eoljjang.png';
   const displayName = data?.discord_user?.global_name || data?.discord_user?.username || 'cat';
 
+  // Bio switches when monika mode is active
+  const bio = monika
+    ? 'Domn Gihceu'
+    : 'do i consider drpepper my girlfriend now?';
+
   return (
     <main className="relative min-h-screen">
+
+      {/* ─── JUST MONIKA MODAL ────────────────────────────── */}
+      {monika && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)' }}
+          onClick={() => setMonika(false)}
+        >
+          <div
+            className="flex flex-col items-center gap-4"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* The card image */}
+            <img
+              src="/monika.svg"
+              alt="Just Monika."
+              style={{
+                width: 360,
+                borderRadius: 18,
+                boxShadow: '0 24px 80px #f48fb155',
+                animation: 'monikaPop 0.35s cubic-bezier(0.34,1.56,0.64,1) both',
+              }}
+            />
+            <button
+              onClick={() => setMonika(false)}
+              style={{
+                background: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                color: 'rgba(255,255,255,0.4)',
+                fontSize: 11,
+                padding: '6px 18px',
+                borderRadius: 99,
+                cursor: 'pointer',
+                letterSpacing: 1,
+              }}
+            >
+              esc
+            </button>
+          </div>
+          <style>{`
+            @keyframes monikaPop {
+              from { opacity: 0; transform: scale(0.6); }
+              to   { opacity: 1; transform: scale(1); }
+            }
+          `}</style>
+        </div>
+      )}
+
       {/* ─── HERO ──────────────────────────────────────────── */}
       <section className="relative z-10 min-h-screen flex flex-col justify-center px-4 max-w-4xl mx-auto py-24">
         <div className="flex flex-col gap-8">
@@ -84,10 +159,13 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bio */}
+          {/* Bio — switches to encoded message when triggered */}
           <div className="max-w-xl">
-            <p className="text-white/50 text-base leading-relaxed">
-              thanks to everyone whos been supportive 💖
+            <p
+              className="text-white/50 text-base leading-relaxed transition-all duration-500"
+              style={monika ? { color: '#f48fb1', fontStyle: 'italic' } : {}}
+            >
+              {bio}
             </p>
           </div>
 
@@ -96,7 +174,7 @@ export default function Home() {
             {[
               { icon: Github, label: 'GitHub', href: 'https://github.com/hdhw' },
               { icon: Globe, label: 'Paragon <3', href: 'https://paragn.lol/u/1' },
-              { icon: MessageCircle, label: 'Discord', href: 'https://discord.com/users/530244467039535104' },
+              { icon: MessageCircle, label: 'Discord', href: '#' },
             ].map(({ icon: Icon, label, href }) => (
               <a
                 key={label}
